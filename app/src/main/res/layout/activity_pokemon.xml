@@ -57,43 +57,6 @@
             android:padding="10dp">
 
             <LinearLayout
-                android:id="@+id/llNewFlowHiltStyleProgramming"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/tvNewFlowHiltStyleProgramming"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.7"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:padding="5dp"
-                    android:text="New flow, hilt style programming: "
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-                <Button
-                    android:id="@+id/btnNewFlowHildStyleProgramming"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.3"
-                    android:text="SHOW"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/llOldWeatherDataFromRoom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,7 +64,7 @@
                 android:weightSum="1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llNewFlowHiltStyleProgramming">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/tvOldData"

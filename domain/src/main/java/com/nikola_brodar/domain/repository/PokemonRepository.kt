@@ -29,7 +29,7 @@ interface PokemonRepository {
 
 
     // new flow with hilt
-    fun getAllPokemonsNewFlow(limit: Int, offset: Int) : Flow<ResultState<*>> //AllPokemons
+    fun getAllPokemonsFlow(limit: Int, offset: Int) : Flow<ResultState<*>> //AllPokemons
 
     fun getAllPokemonMovesFromDB() : Flow<ResultState<*>>
 

@@ -41,7 +41,7 @@
                     android:maxLines="2"
                     android:paddingLeft="?attr/actionBarSize"
                     android:paddingRight="?attr/actionBarSize"
-                    android:text="POKEMON MOVES"
+                    android:text="POKEMON MOVES NEW FLOW AND HILT"
                     android:textColor="@color/colorWhite"
                     android:textSize="22sp" />
 

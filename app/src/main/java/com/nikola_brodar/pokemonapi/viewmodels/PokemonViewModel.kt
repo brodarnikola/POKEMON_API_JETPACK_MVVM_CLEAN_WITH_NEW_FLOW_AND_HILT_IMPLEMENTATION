@@ -29,6 +29,7 @@ import com.nikola_brodar.domain.ResultState
 import com.nikola_brodar.domain.model.AllPokemons
 import com.nikola_brodar.domain.model.MainPokemon
 import com.nikola_brodar.domain.repository.PokemonRepository
+import com.nikola_brodar.domain.usecase.PokemonUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -38,33 +39,13 @@ import javax.inject.Inject
 class PokemonViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     private val dbPokemon: PokemonDatabase,
-    private val dbMapper: DbMapper?
+    private val dbMapper: DbMapper?,
+    private val getRandomPokemon: PokemonUseCase
 ) : ViewModel() {
 
     private val _pokemonMutableLiveData: MutableLiveData<ResultState<*>> = MutableLiveData()
 
     val mainPokemonData: LiveData<ResultState<*>> = _pokemonMutableLiveData
-
-    private val _pokemonMovesMutableLiveData: MutableLiveData<ResultState<*>> = MutableLiveData()
-
-    val pokemonMovesData: LiveData<ResultState<*>> = _pokemonMovesMutableLiveData
-
-    fun getPokemonMovesFromLocalStorage() {
-        viewModelScope.launch {
-            val loading = ResultState.Loading
-            _pokemonMovesMutableLiveData.value = loading
-            val listPokemonMove = getPokemonMovesFromDB()
-            _pokemonMovesMutableLiveData.value = listPokemonMove
-        }
-    }
-
-    private suspend fun getPokemonMovesFromDB(): ResultState<*> {
-
-        val pokemonsMovesList = dbPokemon.pokemonDAO().getSelectedMovesPokemonData()
-        if( pokemonsMovesList.isNotEmpty() )
-            return ResultState.Success(pokemonsMovesList)
-        return ResultState.Error("Something went wrong when reading data from database", null)
-    }
 
     fun getAllPokemonDataFromLocalStorage() {
         viewModelScope.launch {
@@ -84,88 +65,61 @@ class PokemonViewModel @Inject constructor(
         correctPokemonMain.sprites.backDefault = pokemonMain.backDefault
         correctPokemonMain.sprites.frontDefault = pokemonMain.frontDefault
 
-        correctPokemonMain.stats = dbMapper?.mapDbPokemonStatsToDbPokemonStats(pokemonStats) ?: listOf()
-        correctPokemonMain.moves = dbMapper?.mapDbPokemonMovesToDbPokemonMoves(pokemonMoves) ?: listOf()
+        correctPokemonMain.stats =
+            dbMapper?.mapDbPokemonStatsToDbPokemonStats(pokemonStats) ?: listOf()
+        correctPokemonMain.moves =
+            dbMapper?.mapDbPokemonMovesToDbPokemonMoves(pokemonMoves) ?: listOf()
 
         return correctPokemonMain
     }
 
     fun getPokemonData() {
 
-        viewModelScope.launch {
+        getRandomPokemon.execute()
+            .flowOn(Dispatchers.IO)
+            .onEach { _pokemonMutableLiveData.value = it }
+            .catch { e -> e.printStackTrace() }
+            .launchIn(viewModelScope)
 
-            val loading = ResultState.Loading
-            _pokemonMutableLiveData.value = loading
-            flowOf( getAllPokemonData() )
-                .onEach {  allPokemons ->
-                    when( allPokemons ) {
-                        is ResultState.Success -> {
-
-                            val pokemonID = getRandomSelectedPokemonId(allPokemons)
-                            flowOf( pokemonRepository.getRandomSelectedPokemon(pokemonID) )
-                                .map { randomSelectedPokemon ->
-
-                                    when( randomSelectedPokemon )  {
-                                        is ResultState.Success -> {
-                                            deleteAllPokemonData()
-                                            insertPokemonIntoDatabase(randomSelectedPokemon.data as MainPokemon)
-                                            _pokemonMutableLiveData.value = randomSelectedPokemon
-                                        }
-                                        is ResultState.Error -> {
-                                            _pokemonMutableLiveData.value = randomSelectedPokemon
-                                        }
-                                    }
-                                }.collect()
-                        }
-                        is ResultState.Error -> {
-                            _pokemonMutableLiveData.value = allPokemons
-                        }
-                        else -> {
-                            val errorDefault = ResultState.Error("", null)
-                            _pokemonMutableLiveData.value = errorDefault
-                        }
-                    }
-                }
-                .launchIn(viewModelScope)
-        }
+//        viewModelScope.launch {
+//
+//            val loading = ResultState.Loading
+//            _pokemonMutableLiveData.value = loading
+//            flowOf( getAllPokemonData() )
+//                .onEach {  allPokemons ->
+//                    when( allPokemons ) {
+//                        is ResultState.Success -> {
+//
+//                            val pokemonID = getRandomSelectedPokemonId(allPokemons)
+//                            flowOf( pokemonRepository.getRandomSelectedPokemon(pokemonID) )
+//                                .map { randomSelectedPokemon ->
+//
+//                                    when( randomSelectedPokemon )  {
+//                                        is ResultState.Success -> {
+//                                            deleteAllPokemonData()
+//                                            insertPokemonIntoDatabase(randomSelectedPokemon.data as MainPokemon)
+//                                            _pokemonMutableLiveData.value = randomSelectedPokemon
+//                                        }
+//                                        is ResultState.Error -> {
+//                                            _pokemonMutableLiveData.value = randomSelectedPokemon
+//                                        }
+//                                    }
+//                                }.collect()
+//                        }
+//                        is ResultState.Error -> {
+//                            _pokemonMutableLiveData.value = allPokemons
+//                        }
+//                        else -> {
+//                            val errorDefault = ResultState.Error("", null)
+//                            _pokemonMutableLiveData.value = errorDefault
+//                        }
+//                    }
+//                }
+//                .launchIn(viewModelScope)
+//        }
     }
 
-    private fun getRandomSelectedPokemonId(allPokemons: ResultState.Success<*>) : Int {
-        val randomPokemonUrl = allPokemons.data as AllPokemons
-        val separateString = randomPokemonUrl.results.random().url.split("/")
-        val pokemonId = separateString.get( separateString.size - 2 )
-        Log.d(
-            ContentValues.TAG,
-            "Id is: ${pokemonId.toInt()}"
-        )
-        return pokemonId.toInt()
-    }
 
-    private suspend fun deleteAllPokemonData() {
-        coroutineScope {
-            val deferreds = listOf(
-                async { dbPokemon.pokemonDAO().clearMainPokemonData() },
-                async { dbPokemon.pokemonDAO().clearPokemonStatsData() },
-                async { dbPokemon.pokemonDAO().clearMPokemonMovesData() }
-            )
-            deferreds.awaitAll()
-        }
-    }
-
-    private suspend fun insertPokemonIntoDatabase(pokemonData: MainPokemon) {
-
-        val pokemonMain =
-            dbMapper?.mapDomainMainPokemonToDBMainPokemon(pokemonData) ?: DBMainPokemon()
-        dbPokemon.pokemonDAO().insertMainPokemonData(pokemonMain)
-
-        val pokemonStats =
-            dbMapper?.mapDomainPokemonStatsToDbPokemonStats(pokemonData.stats) ?: listOf()
-        dbPokemon.pokemonDAO().insertStatsPokemonData(pokemonStats)
-
-        val pokemonMoves =
-            dbMapper?.mapDomainPokemonMovesToDbPokemonMoves(pokemonData.moves) ?: listOf()
-        dbPokemon.pokemonDAO().insertMovesPokemonData(pokemonMoves)
-    }
 
     private suspend fun getAllPokemonData(): ResultState<*> {
         return pokemonRepository.getAllPokemons(100, 0)

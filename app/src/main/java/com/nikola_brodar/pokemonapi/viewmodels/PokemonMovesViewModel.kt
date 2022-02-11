@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PokemonMovesFlowHiltViewModel @Inject constructor(
+class PokemonMovesViewModel @Inject constructor(
     private val getPokemonMoves: PokemonMovesUseCase
 ) : ViewModel() {
 
