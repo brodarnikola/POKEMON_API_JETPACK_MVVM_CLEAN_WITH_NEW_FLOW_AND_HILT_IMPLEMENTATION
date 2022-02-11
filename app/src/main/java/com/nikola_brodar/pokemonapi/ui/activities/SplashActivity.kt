@@ -38,7 +38,7 @@ class SplashActivity : AppCompatActivity() {
     private fun startApp() {
 
         if (ConnectivityMonitor.isAvailable()) {
-            val intent = Intent(this@SplashActivity, PokemonActivity::class.java)
+            val intent = Intent(this@SplashActivity, PokemonNewFlowHiltActivity::class.java)
             startActivity(intent)
             finish()
         } else if (!ConnectivityMonitor.isAvailable()) {
@@ -55,7 +55,7 @@ class SplashActivity : AppCompatActivity() {
         if (!ConnectivityMonitor.isAvailable()) {
             tvTurnOn.text = getString(R.string.internet_not_available)
         }  else {
-            val intent = Intent(this@SplashActivity, PokemonActivity::class.java)
+            val intent = Intent(this@SplashActivity, PokemonNewFlowHiltActivity::class.java)
             startActivity(intent)
             finish()
         }

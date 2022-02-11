@@ -18,7 +18,7 @@ import com.nikola_brodar.pokemonapi.ui.adapters.PokemonMovesAdapter
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonMovesFlowHiltViewModel
-import kotlinx.android.synthetic.main.activity_pokemon.*
+import kotlinx.android.synthetic.main.activity_pokemon_moves_new_flow_hilt.*
 
 
 class PokemonMovesNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {

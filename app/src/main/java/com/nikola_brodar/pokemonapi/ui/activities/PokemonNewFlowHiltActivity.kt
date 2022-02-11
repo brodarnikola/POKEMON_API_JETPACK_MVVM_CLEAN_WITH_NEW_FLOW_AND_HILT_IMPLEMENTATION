@@ -19,7 +19,7 @@ import com.nikola_brodar.pokemonapi.ui.adapters.PokemonAdapter
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonNewFlowHiltViewModel
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
-import kotlinx.android.synthetic.main.activity_pokemon.*
+import kotlinx.android.synthetic.main.activity_pokemon_new_flow_hilt_style.*
 
 
 class PokemonNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {

@@ -20,8 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.nikola_brodar.pokemonapi.ui.activities.PokemonActivity" />
-        <activity android:name="com.nikola_brodar.pokemonapi.ui.activities.PokemonMovesActivity" />
 
         <activity android:name="com.nikola_brodar.pokemonapi.ui.activities.PokemonNewFlowHiltActivity" />
         <activity android:name="com.nikola_brodar.pokemonapi.ui.activities.PokemonMovesNewFlowHiltActivity" />
