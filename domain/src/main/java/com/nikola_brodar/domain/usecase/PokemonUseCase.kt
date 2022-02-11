@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class PokemonUseCase(private val pokemonRepository: PokemonRepository) {
 
-    fun execute() : Flow<ResultState<*>> = pokemonRepository.getAllPokemonsNewFlow(100, 0)
+    fun execute() : Flow<ResultState<*>> = pokemonRepository.getAllPokemonsFlow(100, 0)
 
 }
 

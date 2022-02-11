@@ -30,10 +30,11 @@ class PokemonRepositoryImpl constructor(
         val pokemonsMovesList = dbPokemon.pokemonDAO().getSelectedMovesPokemonData()
         if (pokemonsMovesList.isNotEmpty())
             emit(ResultState.Success(pokemonsMovesList))
-        emit(ResultState.Error("Something went wrong when reading data from database", null))
+        else
+            emit(ResultState.Error("Something went wrong when reading data from database", null))
     }
 
-    override fun getAllPokemonsNewFlow(limit: Int, offset: Int): Flow<ResultState<*>> =
+    override fun getAllPokemonsFlow(limit: Int, offset: Int): Flow<ResultState<*>> =
         flow {
             val result = getResult { service.getAllPokemons(limit, offset) }
             when (result) {

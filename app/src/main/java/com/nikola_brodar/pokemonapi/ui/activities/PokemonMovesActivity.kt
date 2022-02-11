@@ -17,12 +17,12 @@ import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonMovesBinding
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonMovesAdapter
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
-import com.nikola_brodar.pokemonapi.viewmodels.PokemonMovesFlowHiltViewModel
+import com.nikola_brodar.pokemonapi.viewmodels.PokemonMovesViewModel
 import kotlinx.android.synthetic.main.activity_pokemon.*
 
 class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
 
-    val pokemonViewModel: PokemonMovesFlowHiltViewModel by viewModels()
+    val pokemonViewModel: PokemonMovesViewModel by viewModels()
 
     private lateinit var pokemonAdapter: PokemonMovesAdapter
     var pokemonLayoutManager: LinearLayoutManager? = null

@@ -16,7 +16,7 @@ import com.nikola_brodar.domain.model.MainPokemon
 import com.nikola_brodar.pokemonapi.R
 import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonBinding
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonAdapter
-import com.nikola_brodar.pokemonapi.viewmodels.PokemonNewFlowHiltViewModel
+import com.nikola_brodar.pokemonapi.viewmodels.PokemonViewModel
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
 import kotlinx.android.synthetic.main.activity_pokemon.*
@@ -26,7 +26,7 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
     var displayCurrentPokemonData = false
 
-    val pokemonViewModel: PokemonNewFlowHiltViewModel by viewModels()
+    val pokemonViewModel: PokemonViewModel by viewModels()
 
     private lateinit var pokemonAdapter: PokemonAdapter
     var pokemonLayoutManager: LinearLayoutManager? = null

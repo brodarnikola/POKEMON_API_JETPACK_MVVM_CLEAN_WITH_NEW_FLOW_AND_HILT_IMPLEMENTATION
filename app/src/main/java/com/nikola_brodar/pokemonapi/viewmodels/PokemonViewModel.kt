@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class PokemonNewFlowHiltViewModel @Inject constructor(
+class PokemonViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     private val dbPokemon: PokemonDatabase,
     private val dbMapper: DbMapper?,
