@@ -13,27 +13,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nikola_brodar.data.database.model.DBPokemonMoves
 import com.nikola_brodar.domain.ResultState
 import com.nikola_brodar.pokemonapi.R
-import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonMovesNewFlowHiltBinding
+import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonMovesBinding
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonMovesAdapter
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonMovesFlowHiltViewModel
-import kotlinx.android.synthetic.main.activity_pokemon_moves_new_flow_hilt.*
+import kotlinx.android.synthetic.main.activity_pokemon.*
 
-
-class PokemonMovesNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
+class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
 
     val pokemonViewModel: PokemonMovesFlowHiltViewModel by viewModels()
 
     private lateinit var pokemonAdapter: PokemonMovesAdapter
     var pokemonLayoutManager: LinearLayoutManager? = null
 
-    private lateinit var binding: ActivityPokemonMovesNewFlowHiltBinding
+    private lateinit var binding: ActivityPokemonMovesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityPokemonMovesNewFlowHiltBinding.inflate(layoutInflater)
+        binding = ActivityPokemonMovesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -107,7 +106,7 @@ class PokemonMovesNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
     private fun initializeUi() {
 
         pokemonLayoutManager = LinearLayoutManager(
-            this@PokemonMovesNewFlowHiltActivity,
+            this@PokemonMovesActivity,
             RecyclerView.VERTICAL,
             false
         )
@@ -131,7 +130,7 @@ class PokemonMovesNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                val intent = Intent(this, PokemonNewFlowHiltActivity::class.java)
+                val intent = Intent(this, PokemonActivity::class.java)
                 intent.putExtra("displayCurrentPokemonData", true)
                 startActivity(intent)
                 finish()
@@ -142,7 +141,7 @@ class PokemonMovesNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this, PokemonNewFlowHiltActivity::class.java)
+        val intent = Intent(this, PokemonActivity::class.java)
         intent.putExtra("displayCurrentPokemonData", true)
         startActivity(intent)
         finish()

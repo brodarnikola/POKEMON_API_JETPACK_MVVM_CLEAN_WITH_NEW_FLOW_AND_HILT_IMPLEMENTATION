@@ -14,15 +14,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.nikola_brodar.domain.ResultState
 import com.nikola_brodar.domain.model.MainPokemon
 import com.nikola_brodar.pokemonapi.R
-import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonNewFlowHiltStyleBinding
+import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonBinding
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonAdapter
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonNewFlowHiltViewModel
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
-import kotlinx.android.synthetic.main.activity_pokemon_new_flow_hilt_style.*
+import kotlinx.android.synthetic.main.activity_pokemon.*
 
 
-class PokemonNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
+class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
     var displayCurrentPokemonData = false
 
@@ -31,12 +31,12 @@ class PokemonNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
     private lateinit var pokemonAdapter: PokemonAdapter
     var pokemonLayoutManager: LinearLayoutManager? = null
 
-    private lateinit var binding: ActivityPokemonNewFlowHiltStyleBinding
+    private lateinit var binding: ActivityPokemonBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityPokemonNewFlowHiltStyleBinding.inflate(layoutInflater)
+        binding = ActivityPokemonBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -141,7 +141,7 @@ class PokemonNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
 
     private fun initializeUi() {
 
-        pokemonLayoutManager = LinearLayoutManager(this@PokemonNewFlowHiltActivity, RecyclerView.VERTICAL, false)
+        pokemonLayoutManager = LinearLayoutManager(this@PokemonActivity, RecyclerView.VERTICAL, false)
 
         pokemonAdapter = PokemonAdapter( mutableListOf() )
 
@@ -152,7 +152,7 @@ class PokemonNewFlowHiltActivity : BaseActivity(R.id.no_internet_layout) {
         binding.pokemonList.adapter = pokemonAdapter
 
         binding.btnRoomOldWeatherData.setOnClickListener {
-            val intent = Intent(this, PokemonMovesNewFlowHiltActivity::class.java)
+            val intent = Intent(this, PokemonMovesActivity::class.java)
             startActivity(intent)
             finish()
         }
