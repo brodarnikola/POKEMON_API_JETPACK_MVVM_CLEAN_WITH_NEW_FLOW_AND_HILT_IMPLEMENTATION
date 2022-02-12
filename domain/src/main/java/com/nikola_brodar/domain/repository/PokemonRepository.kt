@@ -23,11 +23,6 @@ import com.nikola_brodar.domain.model.*
 
 interface PokemonRepository {
 
-    suspend fun getAllPokemons(limit: Int, offset: Int) : ResultState<*> //AllPokemons
-
-    suspend fun getRandomSelectedPokemon(id: Int) : ResultState<*> //MainPokemon
-
-
     // new flow with hilt
     fun getAllPokemonsFlow(limit: Int, offset: Int) : Flow<ResultState<*>> //AllPokemons
 

@@ -65,17 +65,6 @@ class PokemonRepositoryImpl constructor(
                             )
                         }
                     }
-
-                    // .collect()
-
-                    // .collect()
-
-
-                    // .launchIn(viewModelScope)
-
-                    // emit((ResultState.Success(correctResult)))
-
-                    // return ResultState.Success(correctResult)
                 }
                 is ResultState.Error -> {
                     emit(ResultState.Error(result.message, result.exception))
@@ -125,37 +114,5 @@ class PokemonRepositoryImpl constructor(
         return pokemonId.toInt()
     }
 
-
-    override suspend fun getAllPokemons(limit: Int, offset: Int): ResultState<*> {
-        val result = getResult { service.getAllPokemons(limit, offset) }
-        when (result) {
-            is ResultState.Success -> {
-                val correctResult = dbMapper?.mapAllPokemonToDomainAllPokemon(result.data)
-                return ResultState.Success(correctResult)
-            }
-            is ResultState.Error -> {
-                return ResultState.Error(result.message, result.exception)
-            }
-            else -> {
-                return ResultState.Error("", null)
-            }
-        }
-    }
-
-    override suspend fun getRandomSelectedPokemon(id: Int): ResultState<*> { // MainPokemon {
-        val result = getResult { service.getRandomSelectedPokemon(id) }
-        when (result) {
-            is ResultState.Success -> {
-                val correctResult = dbMapper?.mapApiPokemonToDomainPokemon(result.data)
-                return ResultState.Success(correctResult)
-            }
-            is ResultState.Error -> {
-                return ResultState.Error(result.message, result.exception)
-            }
-            else -> {
-                return ResultState.Error("", null)
-            }
-        }
-    }
 
 }
