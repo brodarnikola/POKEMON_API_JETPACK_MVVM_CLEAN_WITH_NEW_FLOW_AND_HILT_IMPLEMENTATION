@@ -16,8 +16,6 @@
 
 package com.nikola_brodar.pokemonapi.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nikola_brodar.domain.ResultState
@@ -25,10 +23,7 @@ import com.nikola_brodar.domain.usecase.PokemonMovesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,9 +32,8 @@ class PokemonMovesViewModel @Inject constructor(
     private val getPokemonMoves: PokemonMovesUseCase
 ) : ViewModel() {
 
-    private val _pokemonMovesMutableLiveData: MutableLiveData<ResultState<*>> = MutableLiveData()
-
-    val pokemonMovesData: LiveData<ResultState<*>> = _pokemonMovesMutableLiveData
+    private val _pokemonMovesMutableLiveData: MutableStateFlow<ResultState<*>> = MutableStateFlow(ResultState.Loading)
+    val pokemonMovesData: StateFlow<ResultState<*>> get() = _pokemonMovesMutableLiveData
 
     fun getPokemonMovesFromLocalStorage() {
 

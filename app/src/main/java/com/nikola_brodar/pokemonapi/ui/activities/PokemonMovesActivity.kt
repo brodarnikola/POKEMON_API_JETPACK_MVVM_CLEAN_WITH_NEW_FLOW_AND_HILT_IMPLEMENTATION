@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nikola_brodar.data.database.model.DBPokemonMoves
@@ -19,6 +21,8 @@ import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonMovesViewModel
 import kotlinx.android.synthetic.main.activity_pokemon.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
 
@@ -47,24 +51,27 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
 
         initializeUi()
 
-        pokemonViewModel.pokemonMovesData.observe(this, Observer { items ->
-            when( items ) {
-                is ResultState.Loading -> {
-                    showProgressBar()
-                    hideAllUiElements()
-                }
+        lifecycleScope.launch {
+            pokemonViewModel.pokemonMovesData.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { items ->
+                    when (items) {
+                        is ResultState.Loading -> {
+                            showProgressBar()
+                            hideAllUiElements()
+                        }
 
-                is ResultState.Success -> {
-                    hideProgressBar()
-                    displayAllUiElements()
-                    successUpdateUi(items.data as List<DBPokemonMoves> )
+                        is ResultState.Success -> {
+                            hideProgressBar()
+                            displayAllUiElements()
+                            successUpdateUi(items.data as List<DBPokemonMoves>)
+                        }
+                        is ResultState.Error -> {
+                            hideProgressBar()
+                            somethingWentWrong(items)
+                        }
+                    }
                 }
-                is ResultState.Error -> {
-                    hideProgressBar()
-                    somethingWentWrong(items)
-                }
-            }
-        })
+        }
 
         pokemonViewModel.getPokemonMovesFromLocalStorage()
     }
@@ -88,7 +95,7 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
     }
 
     private fun somethingWentWrong(items: ResultState.Error) {
-        showSnackbarSync( items.message + items.exception.toString(), true, binding.mainLayout )
+        showSnackbarSync(items.message + items.exception.toString(), true, binding.mainLayout)
     }
 
     private fun successUpdateUi(pokemonData: List<DBPokemonMoves>) {
@@ -123,7 +130,7 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
 
     override fun onNetworkStateUpdated(available: Boolean) {
         super.onNetworkStateUpdated(available)
-        if( viewLoaded == true )
+        if (viewLoaded == true)
             updateConnectivityUi()
     }
 
