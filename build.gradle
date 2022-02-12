@@ -3,11 +3,11 @@ buildscript {
 
     // Define versions in a single place
     ext {
-        kotlin_version = "1.4.0"
+        kotlin_version = "1.5.31"
         // Sdk and tools
-        compileSdkVersion = 30
-        minSdkVersion = 21
-        targetSdkVersion = 30
+        compileSdkVersion = 31
+        minSdkVersion = 23
+        targetSdkVersion = 31
 
         // App dependencies
         appCompatVersion = '1.1.0'
@@ -23,7 +23,7 @@ buildscript {
         kotlinVersion = '1.4.0'
         ktlintVersion = '0.38.1'
         ktxVersion = '1.0.2'
-        lifecycleVersion = '2.4.0-alpha01'
+        lifecycleVersion = '2.4.0'
         materialVersion = '1.2.0'
         navigationVersion = '2.3.5'
         okhttpLoggingVersion = OKHTTPCLIENT_VERSION //'4.7.2'
