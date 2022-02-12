@@ -1,15 +1,13 @@
 package com.nikola_brodar.pokemonapi.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -53,6 +51,7 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
         displayCurrentPokemonData = intent.getBooleanExtra("displayCurrentPokemonData", false)
     }
 
+    @SuppressLint("RepeatOnLifecycleWrongUsage")
     override fun onStart() {
         super.onStart()
         viewLoaded = true
@@ -60,9 +59,8 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
         initializeUi()
 
         lifecycleScope.launch {
-            pokemonViewModel.mainPokemonData
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { items ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                pokemonViewModel.mainPokemonData.collect { items ->
                     when( items ) {
                         is ResultState.Loading -> {
                             showProgressBar()
@@ -79,8 +77,33 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
                             displayAllUiElements()
                             somethingWentWrong(items)
                         }
-                    } }
+                    }
+                }
+            }
         }
+
+//        lifecycleScope.launch {
+//            pokemonViewModel.mainPokemonData
+//                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+//                .collect { items ->
+//                    when( items ) {
+//                        is ResultState.Loading -> {
+//                            showProgressBar()
+//                            hideAllUiElements()
+//                        }
+//                        is ResultState.Success -> {
+//                            clearAdapter()
+//                            hideProgressBar()
+//                            displayAllUiElements()
+//                            successUpdateUiWithData(items.data as MainPokemon)
+//                        }
+//                        is ResultState.Error -> {
+//                            hideProgressBar()
+//                            displayAllUiElements()
+//                            somethingWentWrong(items)
+//                        }
+//                    } }
+//        }
 
         if (displayCurrentPokemonData)
             pokemonViewModel.getAllPokemonDataFromLocalStorage()

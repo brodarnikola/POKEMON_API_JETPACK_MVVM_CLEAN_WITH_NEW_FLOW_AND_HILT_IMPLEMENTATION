@@ -1,5 +1,6 @@
 package com.nikola_brodar.pokemonapi.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -10,10 +11,12 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nikola_brodar.data.database.model.DBPokemonMoves
 import com.nikola_brodar.domain.ResultState
+import com.nikola_brodar.domain.model.MainPokemon
 import com.nikola_brodar.pokemonapi.R
 import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonMovesBinding
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonMovesAdapter
@@ -45,6 +48,7 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    @SuppressLint("RepeatOnLifecycleWrongUsage")
     override fun onStart() {
         super.onStart()
         viewLoaded = true
@@ -52,8 +56,8 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
         initializeUi()
 
         lifecycleScope.launch {
-            pokemonViewModel.pokemonMovesData.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { items ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                pokemonViewModel.pokemonMovesData.collect { items ->
                     when (items) {
                         is ResultState.Loading -> {
                             showProgressBar()
@@ -71,7 +75,30 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
                         }
                     }
                 }
+            }
         }
+
+//        lifecycleScope.launch {
+//            pokemonViewModel.pokemonMovesData.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+//                .collect { items ->
+//                    when (items) {
+//                        is ResultState.Loading -> {
+//                            showProgressBar()
+//                            hideAllUiElements()
+//                        }
+//
+//                        is ResultState.Success -> {
+//                            hideProgressBar()
+//                            displayAllUiElements()
+//                            successUpdateUi(items.data as List<DBPokemonMoves>)
+//                        }
+//                        is ResultState.Error -> {
+//                            hideProgressBar()
+//                            somethingWentWrong(items)
+//                        }
+//                    }
+//                }
+//        }
 
         pokemonViewModel.getPokemonMovesFromLocalStorage()
     }
