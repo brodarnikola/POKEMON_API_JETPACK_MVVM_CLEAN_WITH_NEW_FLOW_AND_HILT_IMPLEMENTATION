@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -20,6 +23,10 @@ import com.nikola_brodar.pokemonapi.viewmodels.PokemonViewModel
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
 import com.nikola_brodar.pokemonapi.ui.utilities.show
 import kotlinx.android.synthetic.main.activity_pokemon.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
 class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
@@ -52,28 +59,30 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
         initializeUi()
 
-        pokemonViewModel.mainPokemonData.observe(this, Observer { items ->
+        lifecycleScope.launch {
+            pokemonViewModel.mainPokemonData
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { items ->
+                    when( items ) {
+                        is ResultState.Loading -> {
+                            showProgressBar()
+                            hideAllUiElements()
+                        }
+                        is ResultState.Success -> {
+                            clearAdapter()
+                            hideProgressBar()
+                            displayAllUiElements()
+                            successUpdateUiWithData(items.data as MainPokemon)
+                        }
+                        is ResultState.Error -> {
+                            hideProgressBar()
+                            displayAllUiElements()
+                            somethingWentWrong(items)
+                        }
+                    } }
+        }
 
-            when( items ) {
-                is ResultState.Loading -> {
-                    showProgressBar()
-                    hideAllUiElements()
-                }
-                is ResultState.Success -> {
-                    clearAdapter()
-                    hideProgressBar()
-                    displayAllUiElements()
-                    successUpdateUiWithData(items.data as MainPokemon)
-                }
-                is ResultState.Error -> {
-                    hideProgressBar()
-                    displayAllUiElements()
-                    somethingWentWrong(items)
-                }
-            }
-        })
-
-        if( displayCurrentPokemonData )
+        if (displayCurrentPokemonData)
             pokemonViewModel.getAllPokemonDataFromLocalStorage()
         else
             pokemonViewModel.getPokemonData()
@@ -86,7 +95,7 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
     }
 
     private fun somethingWentWrong(items: ResultState.Error) {
-        showSnackbarSync( items.message + items.exception.toString(), true, binding.mainLayout )
+        showSnackbarSync(items.message + items.exception.toString(), true, binding.mainLayout)
     }
 
     private fun clearAdapter() {
@@ -96,19 +105,22 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
     private fun successUpdateUiWithData(pokemonData: MainPokemon) {
 
-        Log.d(ContentValues.TAG, "Data is: ${pokemonData.stats.joinToString { "-" + it.stat.name }}")
+        Log.d(
+            ContentValues.TAG,
+            "Data is: ${pokemonData.stats.joinToString { "-" + it.stat.name }}"
+        )
 
         tvName.text = "Name: " + pokemonData.name
 
         Glide.with(this)
-            .load( pokemonData.sprites.backDefault)
+            .load(pokemonData.sprites.backDefault)
             .placeholder(R.drawable.garden_tab_selector)
             .error(R.drawable.garden_tab_selector)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(ivBack)
 
         Glide.with(this)
-            .load( pokemonData.sprites.frontDefault)
+            .load(pokemonData.sprites.frontDefault)
             .placeholder(R.drawable.garden_tab_selector)
             .error(R.drawable.garden_tab_selector)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -141,9 +153,10 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
     private fun initializeUi() {
 
-        pokemonLayoutManager = LinearLayoutManager(this@PokemonActivity, RecyclerView.VERTICAL, false)
+        pokemonLayoutManager =
+            LinearLayoutManager(this@PokemonActivity, RecyclerView.VERTICAL, false)
 
-        pokemonAdapter = PokemonAdapter( mutableListOf() )
+        pokemonAdapter = PokemonAdapter(mutableListOf())
 
         binding.pokemonList.apply {
             layoutManager = pokemonLayoutManager
@@ -162,7 +175,7 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
 
     override fun onNetworkStateUpdated(available: Boolean) {
         super.onNetworkStateUpdated(available)
-        if( viewLoaded == true )
+        if (viewLoaded == true)
             updateConnectivityUi()
     }
 
