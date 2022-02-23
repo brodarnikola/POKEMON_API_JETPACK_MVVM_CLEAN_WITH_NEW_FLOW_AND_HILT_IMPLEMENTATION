@@ -46,9 +46,9 @@ open class BaseActivity(noWifiViewId: Int = 0) : AppCompatActivity() {
     }
 
     fun updateConnectivityUi() {
-//        if (noWifiFrame != null ) {
-//            noWifiFrame?.visibility = if (networkAvailable) View.GONE else View.VISIBLE
-//        }
+        if (noWifiFrame != null ) {
+            noWifiFrame?.visibility = if (networkAvailable) View.GONE else View.VISIBLE
+        }
     }
 
     fun showSnackbarSync(message: String, isLong: Boolean, mainContentRoot: View) {
