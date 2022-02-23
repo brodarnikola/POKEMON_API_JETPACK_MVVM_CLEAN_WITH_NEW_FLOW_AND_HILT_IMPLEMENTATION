@@ -78,6 +78,7 @@ class PokemonMovesActivity : BaseActivity(R.id.no_internet_layout) {
             }
         }
 
+        // Second example with repeatOnLifecycle and flow
 //        lifecycleScope.launch {
 //            pokemonViewModel.pokemonMovesData.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
 //                .collect { items ->
