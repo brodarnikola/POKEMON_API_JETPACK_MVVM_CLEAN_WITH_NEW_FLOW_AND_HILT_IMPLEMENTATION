@@ -51,17 +51,63 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
         displayCurrentPokemonData = intent.getBooleanExtra("displayCurrentPokemonData", false)
     }
 
+    fun highOrderfunc(str: String, mycall: (String) -> Unit) {
+        // inovkes the print() by passing the string str
+        mycall(str)
+    }
+
+    inline fun inlinefunc(str: String, mycall: (String) -> Unit) {
+        // inovkes the print() by passing the string str
+        mycall(str)
+    }
+
+
+    inline fun inlinedFunc2( number: String, lmbd1: (number: String) -> String, lmbd2: () -> Unit) {
+        lmbd1(number)
+        lmbd2()
+    }
+
+    inline fun <reified T> genericFunc() {
+        println("Geeks: ".plus(T::class))
+    }
+
+    var lambda = { println("Geeks -> Lambda expression") }
+
     @SuppressLint("RepeatOnLifecycleWrongUsage")
     override fun onStart() {
         super.onStart()
         viewLoaded = true
+
+        println("GeeskforGeeks: ")
+        highOrderfunc("A Computer Science portal for Geeks", ::println)
+        inlinefunc("A Computer Science portal for Geeks", ::println)
+
+        var test9 = "Geeks"
+
+        inlinedFunc2("5",
+           {
+
+                println("Geeks -> new function called" )
+                test9 = it.plus(" Geeks -> First func 9")
+                it.plus(" Geeks -> First func 9")
+            },
+            {
+                println("Geeks -> 222 func called")
+            }
+        )
+
+        println(test9)
+
+        genericFunc<String>()
+
+        lambda()
 
         initializeUi()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 pokemonViewModel.mainPokemonData.collect { items ->
-                    when( items ) {
+                    when (items) {
                         is ResultState.Loading -> {
                             showProgressBar()
                             hideAllUiElements()
