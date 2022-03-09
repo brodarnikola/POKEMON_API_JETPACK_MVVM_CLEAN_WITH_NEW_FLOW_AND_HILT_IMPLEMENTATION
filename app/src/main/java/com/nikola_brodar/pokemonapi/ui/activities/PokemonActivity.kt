@@ -61,9 +61,9 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
         mycall(str)
     }
 
-
-    inline fun inlinedFunc2( number: String, lmbd1: (number: String) -> String, lmbd2: () -> Unit) {
-        lmbd1(number)
+    // crossinline, noinline
+    inline fun inlinedFunc2( newText: String, lmbd1: (newText: String) -> String, lmbd2: () -> Unit) {
+        lmbd1(newText)
         lmbd2()
     }
 
@@ -85,8 +85,7 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
         var test9 = "Geeks"
 
         inlinedFunc2("5",
-           {
-
+            {
                 println("Geeks -> new function called" )
                 test9 = it.plus(" Geeks -> First func 9")
                 it.plus(" Geeks -> First func 9")
