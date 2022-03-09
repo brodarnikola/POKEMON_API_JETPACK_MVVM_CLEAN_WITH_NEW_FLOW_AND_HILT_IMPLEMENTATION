@@ -16,6 +16,7 @@ import com.nikola_brodar.domain.ResultState
 import com.nikola_brodar.domain.model.MainPokemon
 import com.nikola_brodar.pokemonapi.R
 import com.nikola_brodar.pokemonapi.databinding.ActivityPokemonBinding
+import com.nikola_brodar.pokemonapi.genericexample.*
 import com.nikola_brodar.pokemonapi.ui.adapters.PokemonAdapter
 import com.nikola_brodar.pokemonapi.viewmodels.PokemonViewModel
 import com.nikola_brodar.pokemonapi.ui.utilities.hide
@@ -77,6 +78,14 @@ class PokemonActivity : BaseActivity(R.id.no_internet_layout) {
     override fun onStart() {
         super.onStart()
         viewLoaded = true
+
+        // Generics, in out, example
+        // Producer -> return some values -> out -> for example like List<out T>, or List<String> .. list support only get()
+        // Consumer -> consumes some values -> in -> for example like MutableList<in T>, or MutableList<String> .. mutablelist support get() and add()
+
+        val producerPhone: ProducerPhone<Phone> = ProducerPhone<Android>(Android()) // variance
+        val consumerPhone: ConsumerPhone<Android> = ConsumerPhone<Phone>() // contravariance
+        consumerPhone.printPhone(Android())
 
         println("GeeskforGeeks: ")
         highOrderfunc("A Computer Science portal for Geeks", ::println)
